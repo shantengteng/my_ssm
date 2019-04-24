@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <!-- 以下配置的加载顺序：ServletContext >> context-param >> listener >> filter >> servlet >> spring -->
+
+    <!-- 1.针对Spring配置：读取配置文件 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring-config.xml</param-value>
+    </context-param>
+
+    <!-- 2.日志使用logback -->
+    <context-param>
+        <param-name>logbackConfigLocation</param-name>
+        <param-value>classpath:logback.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
+
+    <!-- 注册ServletContext监听器，创建容器对象，并且将ApplicationContext对象放到Application域中 -->
+    <listener>
+        <!--定义Listener的类名称 -->
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <!-- 防止spring内存溢出的监听器 -->
+    <listener>
+        <!--定义Listener的类名称 -->
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+
+
+    <!-- e.g.编码过滤器 -->
+    <!-- 用来声明filter的相关设定,过滤器可以截取和修改一个servlet或jsp页面的请求或从一个servlet或jsp页面发出的响应 -->
+    <filter>
+        <!-- 指定filter的名字 -->
+        <filter-name>encodingFilter</filter-name>
+        <!-- 定义filter的类的名称 -->
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <!-- 设置是否启用异步支持 -->
+        <!--<async-supported>true</async-supported>-->
+        <!-- 用来定义参数,若在servlet可以使用下列方法来获取:String param_name = getServletContext().getInitParamter("param_name里面的值"); -->
+        <init-param>
+            <!-- 参数名称 -->
+            <param-name>encoding</param-name>
+            <!-- 参数值 -->
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+
+    <!-- 用来定义filter所对应的URL -->
+    <filter-mapping>
+        <!-- 指定对应filter的名字 -->
+        <filter-name>encodingFilter</filter-name>
+        <!-- 指定filter所对应的URL 要拦截的URL -->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!--******************************************************servlet配置****************************************************** -->
+
+    <!-- e.g.spring 前端控制器 -->
+    <!-- 用来声明一个servlet的数据 -->
+    <servlet>
+        <!-- 指定servlet的名称 -->
+        <servlet-name>SpringMVC</servlet-name>
+        <!-- 指定servlet的类的名称,这里配置了前端控制器 -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 用来定义参数,可有多个init-param, 在servlet类中通过getInitParamenter(String name)方法访问初始化参数 -->
+        <init-param>
+            <!-- 参数名称 -->
+            <param-name>contextConfigLocation</param-name>
+            <!-- 参数值 -->
+            <param-value>classpath:spring-mvc.xml</param-value>
+        </init-param>
+        <!-- 当值为正数或零时:Servlet容器先加载数值小的servlet,再依次加载其他数值大的servlet -->
+        <load-on-startup>1</load-on-startup>
+        <!-- 设置是否启用异步支持 -->
+        <!--<async-supported>true</async-supported>-->
+    </servlet>
+    <!-- 用来定义servlet所对应的URL -->
+    <servlet-mapping>
+        <!-- 指定servlet的名称 -->
+        <servlet-name>SpringMVC</servlet-name>
+        <!-- 指定servlet所对应的URL -->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <!-- 会话超时配置（单位为分钟）-->
+    <session-config><!--如果某个会话在一定时间未被访问，则服务器可以扔掉以节约内存-->
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+</web-app>
+        
