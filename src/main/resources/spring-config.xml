@@ -46,5 +46,33 @@
     <!-- 配置基于注解的声明式事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
+
+    <!--Spring3.0 对异常的处理方式总共有两种：-->
+    <!--一种是使用 HandlerExceptionResolver 接口，并且 Spring 已经提供默认的实现类 SimpleMappingExceptionResolver。-->
+    <!--第二种方法是在 Controller 内部实现，灵活性更高。这两种方式不能共存。我们一般在项目中使用第一种方法-->
+
+    <!--自定义实现类与默认的实现类，可同时使用。-->
+    <!--自定义的实现类实现HandlerExceptionResolver接口 -->
+    <!--<bean id="exceptionHandler" class="com.enh.test.CustomExceptionHandler"/>-->
+
+
+    <!-- 默认的实现类注入 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 为所有的异常定义默认的异常处理页面，exceptionMappings未定义的异常使用本默认配置 -->
+        <property name="defaultErrorView" value="errors/error"></property>
+        <!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception -->
+        <property name="exceptionAttribute" value="ex"></property>
+        <!--
+    　　　　定义需要特殊处理的异常，用类名或完全路径名作为key，异常页文件名作为值，
+    　　　　将不同的异常映射到不同的页面上。
+    　　 -->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="IOException">error/ioexp</prop>-->
+                <!--<prop key="java.sql.SQLException">error/sqlexp</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    </bean>
+
 </beans>
 
