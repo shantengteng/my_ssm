@@ -9,7 +9,7 @@
     <!-- 1.针对Spring配置：读取配置文件 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring-config.xml</param-value>
+        <param-value>classpath:spring-*.xml</param-value>
     </context-param>
 
     <!-- 2.日志使用logback -->
