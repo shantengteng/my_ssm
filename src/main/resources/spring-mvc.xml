@@ -72,4 +72,28 @@
         <property name="maxInMemorySize" value="40960"/>
     </bean>
 
+    <!--启用shiro注解 -->
+    <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">-->
+        <!--<property name="proxyTargetClass" value="true" />-->
+    <!--</bean>-->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean>
+    <!-- shiro为集成springMvc 拦截异常，使用注解时无权限的跳转 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!-- 这里你可以根据需要定义N多个错误异常转发 -->
+                <prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/unauthorized</prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">redirect:/unauthorized</prop>
+                <prop key="java.lang.IllegalArgumentException">/error</prop>  <!-- 参数错误(bizError.jsp) -->
+                <prop key="java.lang.Exception">/error</prop>  <!-- 其他错误为'未定义错误'(unknowError.jsp) -->
+            </props>
+        </property>
+    </bean>
+
+    <!-- 静态资源访问（不拦截此目录下的东西的访问） -->
+    <mvc:resources location="/js/" mapping="/js/**" />
+    <mvc:resources location="/icon/" mapping="/icon/**" />
+
 </beans>
